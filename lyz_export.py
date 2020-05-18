@@ -73,12 +73,12 @@ class MyEffect(inkex.Effect):
         self.png_area = "--export-area-page"
         self.timout = 60 #timeout time for external calls to Inkscape in seconds
 
-        self.OptionParser.add_option("--area_select" , type=string  , dest="area_select"  , default="page_area" )
-        self.OptionParser.add_option("--cut_select"  , type=string  , dest="cut_select"   , default="zip"       )
-        self.OptionParser.add_option("--resolution"  , type=int     , dest="resolution"   , default=1000        )
-        self.OptionParser.add_option("--margin"      , type=float   , dest="margin"       , default=2.00        )
-        self.OptionParser.add_option("--inkscape_dpi", type=float   , dest="inkscape_dpi" , default=96.0        )
-        self.OptionParser.add_option("--txt2paths"   , type=inkex.Boolean , dest="txt2paths"    , default=False       )
+        self.arg_parser.add_argument("--area_select" , type=string  , dest="area_select"  , default="page_area" )
+        self.arg_parser.add_argument("--cut_select"  , type=string  , dest="cut_select"   , default="zip"       )
+        self.arg_parser.add_argument("--resolution"  , type=int     , dest="resolution"   , default=1000        )
+        self.arg_parser.add_argument("--margin"      , type=float   , dest="margin"       , default=2.00        )
+        self.arg_parser.add_argument("--inkscape_dpi", type=float   , dest="inkscape_dpi" , default=96.0        )
+        self.arg_parser.add_argument("--txt2paths"   , type=inkex.Boolean , dest="txt2paths"    , default=False       )
 
         self.layers = ['0']
         self.layer = '0'

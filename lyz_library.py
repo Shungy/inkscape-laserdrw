@@ -1,4 +1,4 @@
-#!/usr/bin/env python 
+#!/usr/bin/env python
 '''
 This script reads and writes Laser Draw (LaserDRW) LYZ files.
 
@@ -44,7 +44,7 @@ def possible_values(loc,len,type,bf):
         tl=4
     elif type=='h' or  type=='H' or type=='>h' or type=='>H':
         tl=2
-        
+
     for i in range(tl):
         for j in range(i,(len-tl+1),tl):
             bf.seek(loc+j)
@@ -56,15 +56,15 @@ def possible_values(loc,len,type,bf):
 
 
 class LYZ_CLASS:
-    def __init__(self):        
+    def __init__(self):
         # DEFINE HEADER FIELDS
         self.header_fields = []
-        
+
         self.header_data = []
         self.feature_list = []
         self.left_over    = ""
         self.EOF          = ""
-        
+
         ##########################  Description ,location,length,type,default value
         self.header_fields.append(["EXTENSION"  ,     9999999,     4, 't', ".LYZ"    ]) #0
         self.header_fields.append(["LENGTH"     ,     9999999,     4, 'i', 221       ]) #1
@@ -87,7 +87,7 @@ class LYZ_CLASS:
         self.header_fields.append(["BORDER2"    ,     9999999,     8, 'd', 1.0       ]) #18
         self.header_fields.append(["BORDER3"    ,     9999999,     8, 'd', 1.0       ]) #19
         self.header_fields.append(["BORDER4"    ,     9999999,     8, 'd', 1.0       ]) #20
-                
+
         # DEFINE FEATURE FIELDS
         self.feature_fields=[]
         ##########################  Description ,location,length,type,default value
@@ -107,7 +107,7 @@ class LYZ_CLASS:
         self.feature_fields.append(["AC Density",     9999999,     4, 'z', [75,0,0,0]        ]) #2 [ACdensity,color 0 or 8, ?,?]
         self.feature_fields.append(["?b(1)"     ,     9999999,     1, 'z', [134]             ]) #3 #solid fill 134
         self.feature_fields.append(["AC cnt"    ,     9999999,     1, 'z', [2]               ]) #4 This needs to be 2 for lines
-        self.feature_fields.append(["?c(1)"     ,     9999999,     1, 'z', [0]               ]) #5 
+        self.feature_fields.append(["?c(1)"     ,     9999999,     1, 'z', [0]               ]) #5
         self.feature_fields.append(["?d(1)"     ,     9999999,     1, 'z', [6]               ]) #6
         self.feature_fields.append(["?e(3)"     ,     9999999,     3, 'z', [0  ,0  ,0  ]     ]) #7
         self.feature_fields.append(["?f(4)"     ,     9999999,     4, 'i', 16                ]) #8
@@ -136,7 +136,7 @@ class LYZ_CLASS:
         self.feature_fields.append(["filename"  ,     9999999,     4, 'x', "\000"            ]) #31
         self.feature_fields.append(["?u(4)"     ,     9999999,     4, 'z', [0  ,0  ,0  ,0  ] ]) #32
         self.feature_fields.append(["ACtexture1",     9999999,     4, 'z', [255,255,255,255] ]) #33 [0  ,0  ,0  ,0  ]
-        self.feature_fields.append(["ACtexture2",     9999999,     4, 'z', [0  ,0  ,0  ,0  ] ]) #34 
+        self.feature_fields.append(["ACtexture2",     9999999,     4, 'z', [0  ,0  ,0  ,0  ] ]) #34
         self.feature_fields.append(["?v(4)"     ,     9999999,     4, 'z', [0  ,0  ,0  ,0  ] ]) #35
         self.feature_fields.append(["?w(4)"     ,     9999999,     4, 'z', [2  ,0  ,0  ,0  ] ]) #36
         self.feature_fields.append(["data length",    9999999,     4, 'i', 2                 ]) #37 needs to be 2 for line
@@ -149,12 +149,12 @@ class LYZ_CLASS:
         self.feature_appendix[10].append(["line Y1",  9999999,     4, 'i', -10000 ]) #position as 1000*value
         self.feature_appendix[10].append(["line X2",  9999999,     4, 'i',  10000 ]) #position as 1000*value
         self.feature_appendix[10].append(["line Y2",  9999999,     4, 'i',  10000 ]) #position as 1000*value
-        self.feature_appendix[10].append(["lineEND",  9999999,     4, 'i', 0      ]) 
+        self.feature_appendix[10].append(["lineEND",  9999999,     4, 'i', 0      ])
         ##Appendix values for PNG
         self.feature_appendix[12].append(["PNGdata",  9999999,     0, 't', ""     ])
         self.feature_appendix[12].append(["PNGend" ,  9999999,     8, 'z', [0,0,0,0,0,0,0,0]  ])
- 
- 
+
+
     def lyz_read(self,loc,len,type,bf):
         #try:
         if 1==1:
@@ -175,9 +175,9 @@ class LYZ_CLASS:
             return data
         #except:
         #    print "Error Reading data (lyz_read)"
-        #    return []        
-        
-        
+        #    return []
+
+
     def lyz_write(self,data,type,bf):
         #print "type,data: ",type,data
         if type=='t':
@@ -194,7 +194,7 @@ class LYZ_CLASS:
                 bf.write(struct.pack('B',0))
         else:
             bf.write(struct.pack(type,data))
-            
+
     def read_header(self,f):
         self.header_data=[]
         for line in self.header_fields:
@@ -202,43 +202,43 @@ class LYZ_CLASS:
             len = line[2]
             typ = line[3]
             self.header_data.append(self.lyz_read(None,len,typ,f))
-    
-    
+
+
     def read_feature(self,f):
         feature_data=[]
         for i in range(len(self.feature_fields)):
             length  = self.feature_fields[i][2]
             typ     = self.feature_fields[i][3]
-            
+
             if i==31 and feature_data[1]==12:
                 string_length = feature_data[-1]*4
                 feature_data.append(self.lyz_read(None,string_length,typ,f))
-            else:  
+            else:
                 feature_data.append(self.lyz_read(None,length,typ,f))
-            
+
             #if i==30 and feature_data[1]==12:
             #    self.feature_fields[i+1][2] = feature_data[-1]*4
 
-        
+
         feat_type = feature_data[1]
         if feat_type==10 or feat_type==12:
             for i in range(len(self.feature_appendix[feat_type])):
                 if feat_type==12 and i==0:
                     length = feature_data[-1]
                 else:
-                    length = self.feature_appendix[feat_type][i][2]   
+                    length = self.feature_appendix[feat_type][i][2]
                 typ    = self.feature_appendix[feat_type][i][3]
                 feature_data.append(self.lyz_read(None,length,typ,f))
         return feature_data
-    
-    
+
+
     def setup_new_header(self):
         self.header_data=[]
         for line in self.header_fields:
             data = line[4]
             self.header_data.append(data)
-            
-            
+
+
     def add_line(self,x1,y1,x2,y2,Pen_Width=.025):
         feature_data=[]
         for line in self.feature_fields:
@@ -252,10 +252,10 @@ class LYZ_CLASS:
         feature_data[1]=10   #set type to line
         feature_data[4]=[2]  #Not sure what this is for lines but it needs to be 2
         feature_data[18]=Pen_Width
-        
+
         self.header_data[2]=self.header_data[2]+1
         self.feature_list.append(feature_data)
-    
+
     def add_png(self,PNG_DATA,Xsixe,Ysize):
         filename="filename"
         feature_data=[]
@@ -267,7 +267,7 @@ class LYZ_CLASS:
         feature_data[1]  = 12            # set type to PNG
         feature_data[3]  = [150]
         feature_data[2]  = [75, 4, 0, 144]
-        feature_data[4]  = [0]           # Number of Anti-Counterfeit lines 
+        feature_data[4]  = [0]           # Number of Anti-Counterfeit lines
         feature_data[6]  = [12]          # if this is not set to [12] the image does not get passed to the engrave window
         feature_data[16] = Xsixe         # set PNG width
         feature_data[17] = Ysize         # set PNG height
@@ -279,20 +279,20 @@ class LYZ_CLASS:
         feature_data[34]=[255,255,255,255]
         feature_data[36]=[226, 29, 5, 175]
         feature_data[37]= len(PNG_DATA)  # set PNG data length
-        
+
         self.header_data[2]=self.header_data[2]+1
         self.feature_list.append(feature_data)
-    
+
     def set_size(self,Xsize,Ysize):
         self.header_data[15]=Xsize
         self.header_data[16]=Ysize
-        
+
     def set_margin(self,margin):
         self.header_data[17]=margin/2
         self.header_data[18]=margin/2
         self.header_data[19]=margin/2
         self.header_data[20]=margin/2
-        
+
     def find_PNG(self,f):
         self.PNGstart = -1
         self.PNGend   = -1
@@ -313,8 +313,8 @@ class LYZ_CLASS:
                         self.PNGend = f.tell()+4
                         flag = False
         f.seek(0)
-            
-    
+
+
     def read_file(self, file_name):
         with open(file_name, "rb") as f:
             self.find_PNG(f)
@@ -326,7 +326,7 @@ class LYZ_CLASS:
                 self.feature_list.append(data)
 
             self.left_over = f.read( self.header_data[1]-4-f.tell() )
-            
+
             self.EOF = ""
             byte = f.read(1)
             while byte!="":
@@ -334,21 +334,21 @@ class LYZ_CLASS:
                 byte = f.read(1)
             #print possible_values(200+217,348-200,'d',f)
 
-            
+
     def write_file(self, file_name):
         with open(file_name, "wb") as f:
             for i in range(len(self.header_fields)):
                 typ  = self.header_fields[i][3]
                 data =  self.header_data[i]
                 self.lyz_write(data,typ,f)
-             
+
             for j in range(len(self.feature_list)):
                 for i in range(len(self.feature_fields)):
                     typ  = self.feature_fields[i][3]
                     data =  self.feature_list[j][i]
                     #print j,i," typ,data: ",typ,data
                     self.lyz_write(data,typ,f)
-                    
+
                 feat_type=self.feature_list[j][1]
                 if feat_type==10 or feat_type==12:
                     appendix_data=[]
@@ -357,26 +357,25 @@ class LYZ_CLASS:
                         data =  self.feature_list[j][i+len(self.feature_fields)] #appendix_data
                         #print j,i," typ,data: "typ,data
                         self.lyz_write(data,typ,f)
-                
+
             f.write("@EOF")
-            length=f.tell()            
+            length=f.tell()
             f.seek(4)
             f.write(struct.pack('i',length))
 
 
     def print_header(self):
-        print "\nHEADER DATA:"
         print "--------------------"
         for i in range(len(self.header_data)):
             print "%11s : " %(self.header_fields[i][0]),self.header_data[i]
-        
-        
+
+
     def print_features(self):
         for i in range(len(self.feature_list)):
             print "\nFEATURE #%d:" %(i+1)
             print "--------------------"
             feature = self.feature_list[i]
-            for j in range(len(self.feature_fields)): 
+            for j in range(len(self.feature_fields)):
                 try:
                     print "%11s : " %(self.feature_fields[j][0]),feature[j]
                 except:
@@ -393,7 +392,7 @@ class LYZ_CLASS:
         print "--------------------"
 
 
-    
+
 if __name__ == "__main__":
     ###############################
     try:
@@ -418,7 +417,7 @@ if __name__ == "__main__":
         with open(image_file, 'rb') as f:
             PNG_DATA = f.read()
         LYZ.add_png(PNG_DATA,20,20)
-        
+
         LYZ.add_line(5,5,-10,-10,0.025)
         #LYZ.print_header()
         #LYZ.print_features()
@@ -431,9 +430,9 @@ if __name__ == "__main__":
             LYZ.print_features()
             print "LEFTOVER    :", LYZ.left_over
             print "EOF         :",LYZ.EOF
-        
+
         if file_out!="":
             LYZ.write_file(file_out)
 
-    
+
 
