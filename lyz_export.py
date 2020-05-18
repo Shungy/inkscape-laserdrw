@@ -43,7 +43,7 @@ import cspsubdiv
 from lyz_library import LYZ_CLASS
 
 try:
-    inkex.localize()
+    inkex.localization.localize()
 except:
     pass
 
