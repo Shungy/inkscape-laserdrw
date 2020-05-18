@@ -78,7 +78,7 @@ class MyEffect(inkex.Effect):
         self.OptionParser.add_option("--resolution"  , type=int     , dest="resolution"   , default=1000        )
         self.OptionParser.add_option("--margin"      , type=float   , dest="margin"       , default=2.00        )
         self.OptionParser.add_option("--inkscape_dpi", type=float   , dest="inkscape_dpi" , default=96.0        )
-        self.OptionParser.add_option("--txt2paths"   , type=inkbool , dest="txt2paths"    , default=False       )
+        self.OptionParser.add_option("--txt2paths"   , type=inkex.Boolean , dest="txt2paths"    , default=False       )
 
         self.layers = ['0']
         self.layer = '0'
