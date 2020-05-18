@@ -1,4 +1,4 @@
-#!/usr/bin/env python 
+#!/usr/bin/env python
 '''
 This file output script for Inkscape creates Laser Draw (LaserDRW) LYZ files.
 
@@ -59,7 +59,7 @@ def run_external(cmd, timeout_sec):
   finally:
     timer.cancel()
 ##################################
-    
+
 class MyEffect(inkex.Effect):
     def __init__(self):
         inkex.Effect.__init__(self)
@@ -71,27 +71,27 @@ class MyEffect(inkex.Effect):
         self.margin = 2
         self.PNG_DATA = None
         self.png_area = "--export-area-page"
-        self.timout = 60 #timeout time for external calls to Inkscape in seconds 
+        self.timout = 60 #timeout time for external calls to Inkscape in seconds
 
-        self.OptionParser.add_option("--area_select" , action="store", type="string"  , dest="area_select"  , default="page_area" )
-        self.OptionParser.add_option("--cut_select"  , action="store", type="string"  , dest="cut_select"   , default="zip"       )
-        self.OptionParser.add_option("--resolution"  , action="store", type="int"     , dest="resolution"   , default=1000        )
-        self.OptionParser.add_option("--margin"      , action="store", type="float"   , dest="margin"       , default=2.00        )
-        self.OptionParser.add_option("--inkscape_dpi", action="store", type="float"   , dest="inkscape_dpi" , default=96.0        )
-        self.OptionParser.add_option("--txt2paths"   , action="store", type="inkbool" , dest="txt2paths"    , default=False       )
-              
+        self.OptionParser.add_option("--area_select" , action="store", type=string  , dest="area_select"  , default="page_area" )
+        self.OptionParser.add_option("--cut_select"  , action="store", type=string  , dest="cut_select"   , default="zip"       )
+        self.OptionParser.add_option("--resolution"  , action="store", type=int     , dest="resolution"   , default=1000        )
+        self.OptionParser.add_option("--margin"      , action="store", type=float   , dest="margin"       , default=2.00        )
+        self.OptionParser.add_option("--inkscape_dpi", action="store", type=float   , dest="inkscape_dpi" , default=96.0        )
+        self.OptionParser.add_option("--txt2paths"   , action="store", type=inkbool , dest="txt2paths"    , default=False       )
+
         self.layers = ['0']
         self.layer = '0'
         self.layernames = []
-      
-      
+
+
     def stream_binary_data(self,filename):
         # Change the format for STDOUT to binary to support
         # writing the binary output file through STDOUT
         if os.name == 'nt': #if sys.platform == "win32":
             try:
                 import msvcrt
-                #msvcrt.setmode(sys.stdout.fileno(), os.O_BINARY)  
+                #msvcrt.setmode(sys.stdout.fileno(), os.O_BINARY)
                 msvcrt.setmode(1, os.O_BINARY)
             except:
                 pass
@@ -100,12 +100,12 @@ class MyEffect(inkex.Effect):
         # Send the contents of the temp file to STDOUT
         sys.stdout.write(out.read())
         out.close()
-        
-    
+
+
     def output(self):
         #create OS temp folder
         self.tmp_dir = tempfile.mkdtemp()
-        
+
         if (self.cut_select=="image"  ):
             LYZ=LYZ_CLASS()
             LYZ.setup_new_header()
@@ -114,7 +114,7 @@ class MyEffect(inkex.Effect):
             LYZ.set_margin(self.margin)
             image_file = os.path.join(self.tmp_dir, "image.lyz")
             LYZ.write_file(image_file)
-        
+
         if (self.cut_select=="all"    ) or (self.cut_select=="zip" ):
             LYZ=LYZ_CLASS()
             LYZ.setup_new_header()
@@ -127,7 +127,7 @@ class MyEffect(inkex.Effect):
             LYZ.set_margin(self.margin)
             all_file = os.path.join(self.tmp_dir, "all.lyz")
             LYZ.write_file(all_file)
-        
+
         if (self.cut_select=="raster" ) or (self.cut_select=="zip" ):
             LYZ=LYZ_CLASS()
             LYZ.setup_new_header()
@@ -136,7 +136,7 @@ class MyEffect(inkex.Effect):
             LYZ.set_margin(self.margin)
             raster_file = os.path.join(self.tmp_dir, "01_raster_engrave.lyz")
             LYZ.write_file(raster_file)
-        
+
         if (self.cut_select=="vector_red" ) or (self.cut_select=="zip" ):
             LYZ=LYZ_CLASS()
             LYZ.setup_new_header()
@@ -148,7 +148,7 @@ class MyEffect(inkex.Effect):
             LYZ.set_margin(self.margin)
             cut_file = os.path.join(self.tmp_dir, "03_vector_cut.lyz")
             LYZ.write_file(cut_file)
-        
+
         if (self.cut_select=="vector_blue" ) or (self.cut_select=="zip" ):
             LYZ=LYZ_CLASS()
             LYZ.setup_new_header()
@@ -160,22 +160,22 @@ class MyEffect(inkex.Effect):
             LYZ.set_margin(self.margin)
             engrave_file = os.path.join(self.tmp_dir, "02_vector_engrave.lyz")
             LYZ.write_file(engrave_file)
-        
+
         if (self.cut_select=="image"  ):
             self.stream_binary_data(image_file)
-        
+
         if (self.cut_select=="all"    ):
             self.stream_binary_data(all_file)
-        
+
         if (self.cut_select=="raster" ):
             self.stream_binary_data(raster_file)
-        
+
         if (self.cut_select=="vector_red" ):
             self.stream_binary_data(cut_file)
-        
+
         if (self.cut_select=="vector_blue"):
             self.stream_binary_data(engrave_file)
-            
+
         if (self.cut_select=="zip" ):
             # Add image LYZ file? Encode zip file names?
             zip_file = os.path.join(self.tmp_dir, "lyz_files.zip")
@@ -190,7 +190,7 @@ class MyEffect(inkex.Effect):
 
         #Delete the temp folder and file
         shutil.rmtree(self.tmp_dir)
-        
+
     def dxf_line(self,csp,pen_width=0.025,color=None,path_id="",layer="none"):
         x1 =  csp[0][0]
         y1 =  csp[0][1]
@@ -208,19 +208,19 @@ class MyEffect(inkex.Effect):
         else:
             self.Cut_Type[path_id]="raster"
             (r,g,b) = (0,0,0)
-    
+
         return '%02x%02x%02x' % (r,g,b)
-        
+
     def process_shape(self, node, mat):
         rgb = (0,0,0)
-        path_id = node.get('id') 
+        path_id = node.get('id')
         style   = node.get('style')
         self.Cut_Type[path_id]="raster" # Set default type to raster
-        
+
         color_props_fill = ('fill', 'stop-color', 'flood-color', 'lighting-color')
         color_props_stroke = ('stroke',)
         color_props = color_props_fill + color_props_stroke
-        
+
         #####################################################
         ## The following is ripped off from Coloreffect.py ##
         #####################################################
@@ -254,7 +254,7 @@ class MyEffect(inkex.Effect):
             y = float(node.get('y'))
             width = float(node.get('width'))
             height = float(node.get('height'))
-            #d = "M %f,%f %f,%f %f,%f %f,%f Z" %(x,y, x+width,y,  x+width,y+height, x,y+height) 
+            #d = "M %f,%f %f,%f %f,%f %f,%f Z" %(x,y, x+width,y,  x+width,y+height, x,y+height)
             #p = cubicsuperpath.parsePath(d)
             rx = 0.0
             ry = 0.0
@@ -262,7 +262,7 @@ class MyEffect(inkex.Effect):
                 rx=float(node.get('rx'))
             if node.get('ry'):
                 ry=float(node.get('ry'))
-                
+
             if max(rx,ry) > 0.0:
                 if rx==0.0 or ry==0.0:
                     rx = max(rx,ry)
@@ -277,32 +277,32 @@ class MyEffect(inkex.Effect):
                 C3 = "A %f,%f 0 0 1 %f,%f" %(rx         , ry         , x          , y+height-ry)
                 L4 = "M %f,%f %f,%f "      %(x          , y+height-ry, x          , y+ry       )
                 C4 = "A %f,%f 0 0 1 %f,%f" %(rx         , ry         , x+rx       , y          )
-                d =  L1 + C1 + L2 + C2 + L3 + C3 + L4 + C4    
+                d =  L1 + C1 + L2 + C2 + L3 + C3 + L4 + C4
             else:
-                d = "M %f,%f %f,%f %f,%f %f,%f Z" %(x,y, x+width,y,  x+width,y+height, x,y+height) 
+                d = "M %f,%f %f,%f %f,%f %f,%f Z" %(x,y, x+width,y,  x+width,y+height, x,y+height)
             p = cubicsuperpath.parsePath(d)
-            
+
         elif node.tag == inkex.addNS('circle','svg'):
             cx = float(node.get('cx') )
             cy = float(node.get('cy'))
             r  = float(node.get('r'))
             d  = "M %f,%f A   %f,%f 0 0 1 %f,%f   %f,%f 0 0 1 %f,%f   %f,%f 0 0 1 %f,%f   %f,%f 0 0 1 %f,%f Z" %(cx+r,cy, r,r,cx,cy+r,  r,r,cx-r,cy,  r,r,cx,cy-r, r,r,cx+r,cy)
             p = cubicsuperpath.parsePath(d)
-        
+
         elif node.tag == inkex.addNS('ellipse','svg'):
-            cx = float(node.get('cx')) 
+            cx = float(node.get('cx'))
             cy = float(node.get('cy'))
             rx = float(node.get('rx'))
             ry = float(node.get('ry'))
             d  = "M %f,%f A   %f,%f 0 0 1 %f,%f   %f,%f 0 0 1 %f,%f   %f,%f 0 0 1 %f,%f   %f,%f 0 0 1 %f,%f Z" %(cx+rx,cy, rx,ry,cx,cy+ry,  rx,ry,cx-rx,cy,  rx,ry,cx,cy-ry, rx,ry,cx+rx,cy)
-            p = cubicsuperpath.parsePath(d) 
+            p = cubicsuperpath.parsePath(d)
         else:
             return
         trans = node.get('transform')
         if trans:
             mat = simpletransform.composeTransform(mat, simpletransform.parseTransform(trans))
         simpletransform.applyTransformToPath(mat, p)
-        
+
         ###################################################
         ## Break Curves down into small lines
         ###################################################
@@ -325,8 +325,8 @@ class MyEffect(inkex.Effect):
                 s = sub[i]
                 e = sub[i+1]
                 self.dxf_line([s[1],e[1]],0.025,rgb,path_id)
-                
-                    
+
+
     def process_clone(self, node):
         trans = node.get('transform')
         x = node.get('x')
@@ -364,7 +364,7 @@ class MyEffect(inkex.Effect):
                     if style['display'] == 'none' and self.options.layer_option and self.options.layer_option=='visible':
                         return
             layer = group.get(inkex.addNS('label', 'inkscape'))
-              
+
             layer = layer.replace(' ', '_')
             if layer in self.layers:
                 self.layer = layer
@@ -380,23 +380,23 @@ class MyEffect(inkex.Effect):
                 self.process_shape(node, self.groupmat[-1])
         if trans:
             self.groupmat.pop()
-            
-            
+
+
     def Make_PNG(self):
         #create OS temp folder
         tmp_dir = tempfile.mkdtemp()
         svg_temp_file = os.path.join(tmp_dir, "LYZimage.svg")
         png_temp_file = os.path.join(tmp_dir, "LYZpngdata.png")
-        
+
         dpi = "%d" %(self.options.resolution)
-        if (self.cut_select=="raster") or (self.cut_select=="all") or (self.cut_select=="zip"):            
-            self.document.write(svg_temp_file)            
+        if (self.cut_select=="raster") or (self.cut_select=="all") or (self.cut_select=="zip"):
+            self.document.write(svg_temp_file)
             cmd = [ "inkscape", self.png_area, "--export-dpi", dpi, "--export-background","rgb(255, 255, 255)","--export-background-opacity", "255" ,"--export-png", png_temp_file, svg_temp_file ]
-            
+
             #p = Popen(cmd, stdout=PIPE, stderr=PIPE)
             #stdout, stderr = p.communicate()
             run_external(cmd, self.timout)
-        else:    
+        else:
             shutil.copyfile(sys.argv[-1], svg_temp_file)
             cmd = [ "inkscape", self.png_area, "--export-dpi", dpi, "--export-background","rgb(255, 255, 255)","--export-background-opacity", "255" ,"--export-png", png_temp_file, svg_temp_file ]
             #p = Popen(cmd, stdout=PIPE, stderr=PIPE)
@@ -407,10 +407,10 @@ class MyEffect(inkex.Effect):
                 self.PNG_DATA = f.read()
         except:
             inkex.errormsg(_("PNG generation timed out.\nTry saving again.\n\n"))
-            
+
         #Delete the temp folder and any files
-        shutil.rmtree(tmp_dir)   
-    
+        shutil.rmtree(tmp_dir)
+
     def unit2mm(self, string):
         # Returns mm given a string representation of units in another system
         # a dictionary of unit to user unit conversion factors
@@ -424,10 +424,10 @@ class MyEffect(inkex.Effect):
                   'pc': 25.4/6.0,
                   'yd': 25.4*12*3,
                   'ft': 25.4*12}
-  
+
         unit = re.compile('(%s)$' % '|'.join(uuconv.keys()))
         param = re.compile(r'(([-+]?[0-9]+(\.[0-9]*)?|[-+]?\.[0-9]+)([eE][-+]?[0-9]+)?)')
- 
+
         p = param.match(string)
         u = unit.search(string)
         if p:
@@ -440,14 +440,14 @@ class MyEffect(inkex.Effect):
         else:
             inkex.errormsg(_("units not understood assuming px  at %d dpi" %(self.inkscape_dpi)))
             retunit = 'px'
-            
+
         try:
             return retval * uuconv[retunit]
         except KeyError:
             return retval
-    
+
     def effect(self):
-        
+
         msg = ""
         #area_select = self.options.area_select # "page_area", "object_area"
         area_select       = "page_area"
@@ -455,8 +455,8 @@ class MyEffect(inkex.Effect):
         self.margin       = self.options.margin       # float value
         self.inkscape_dpi = self.options.inkscape_dpi # float value
         self.txt2paths    = self.options.txt2paths    # boolean Value
-        
-        
+
+
         if (self.txt2paths):
             #create OS temp folder
             tmp_dir = tempfile.mkdtemp()
@@ -466,17 +466,17 @@ class MyEffect(inkex.Effect):
             self.document.parse(txt2path_file)
             #Delete the temp folder and any files
             shutil.rmtree(tmp_dir)
-            
+
         try:
             h_uu = self.unittouu(self.document.getroot().xpath('@height', namespaces=inkex.NSS)[0])
             w_uu = self.unittouu(self.document.getroot().xpath('@width' , namespaces=inkex.NSS)[0])
         except:
             h_uu = inkex.unittouu(self.document.getroot().xpath('@height',namespaces=inkex.NSS)[0])
             w_uu = inkex.unittouu(self.document.getroot().xpath('@width',namespaces=inkex.NSS)[0])
-        
+
         h_mm = self.unit2mm(self.document.getroot().xpath('@height', namespaces=inkex.NSS)[0])
         w_mm = self.unit2mm(self.document.getroot().xpath('@width', namespaces=inkex.NSS)[0])
-        
+
         try:
             view_box_str = self.document.getroot().xpath('@viewBox', namespaces=inkex.NSS)[0]
             view_box_list = view_box_str.split(' ')
@@ -490,7 +490,7 @@ class MyEffect(inkex.Effect):
             scale = 25.4/self.inkscape_dpi
             Dx = 0
             Dy = 0
-        
+
         for node in self.document.getroot().xpath('//svg:g', namespaces=inkex.NSS):
             if node.get(inkex.addNS('groupmode', 'inkscape')) == 'layer':
                 layer = node.get(inkex.addNS('label', 'inkscape'))
@@ -507,7 +507,7 @@ class MyEffect(inkex.Effect):
         #doc = self.document.getroot()
         self.process_group(self.document.getroot())
         #################################################
-        
+
         # msg = msg + self.getDocumentUnit() + "\n"
         # msg = msg + "scale  = %f\n" %(scale)
         msg = msg + "Height(mm)= %f\n" %(h_mm)
@@ -516,9 +516,9 @@ class MyEffect(inkex.Effect):
         # msg = msg + "w_uu   = %f\n" %(w_uu)
 
         #inkex.errormsg(_(msg))
-        
+
         if (area_select=="object_area"):
-            self.png_area = "--export-area-drawing" 
+            self.png_area = "--export-area-drawing"
             xmin= self.lines[0][0]+0.0
             xmax= self.lines[0][0]+0.0
             ymin= self.lines[0][1]+0.0
@@ -535,10 +535,10 @@ class MyEffect(inkex.Effect):
         else:
             self.png_area = "--export-area-page"
             xmin= 0.0
-            xmax=  w_mm 
-            ymin= -h_mm 
+            xmax=  w_mm
+            ymin= -h_mm
             ymax= 0.0
-            
+
         self.Xsize=xmax-xmin
         self.Ysize=ymax-ymin
         Xcenter=(xmax+xmin)/2.0
@@ -548,13 +548,13 @@ class MyEffect(inkex.Effect):
             self.lines[ii][1] = self.lines[ii][1]-Ycenter
             self.lines[ii][2] = self.lines[ii][2]-Xcenter
             self.lines[ii][3] = self.lines[ii][3]-Ycenter
-        
+
         if (self.cut_select=="raster") or \
            (self.cut_select=="all"   ) or \
            (self.cut_select=="image" ) or \
            (self.cut_select=="zip"   ):
             self.Make_PNG()
-        
+
 if __name__ == '__main__':
     e = MyEffect()
     e.affect()
